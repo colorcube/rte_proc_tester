@@ -1,0 +1,116 @@
+proc {
+
+		## TRANSFORMATION METHOD
+		## We assume that CSS Styled Content is used.
+	overruleMode = ts_css
+
+		## DO NOT CONVERT BR TAGS INTO LINEBREAKS
+		## br tags in the content are assumed to be intentional.
+	dontConvBRtoParagraph = 1
+	
+		## REMAP DIV TAGS TO P TAGS
+		## For compatibility between Classic RTE and htmlArea RTE
+	remapParagraphTag = div
+
+		## ALLOW TAGS OUTSIDE
+		## Enter tags which are allowed outside of <P> and <DIV> sections when converted back to database.	
+	allowTagsOutside >
+	
+		## TAGS ALLOWED
+		## Added to the default internal list: b,i,u,a,img,br,div,center,pre,font,hr,sub,sup,p,strong,em,li,ul,ol,blockquote,strike,span
+	allowTags >
+	allowTags (
+		a, b, blockquote, br, div, em, 
+		h1, h2, h3, h4, h5, h6, i, li, ol, p, 
+		span, strong, table, thead, tbody, tfoot, td, th, tr, ul,
+programlisting, code, 
+		)
+	
+		## TAGS DENIED
+		## Make sure we can set rules on any tag listed in allowTags.
+	denyTags >
+	denyTags (
+		abbr, acronym, address, caption, center, cite, font, 
+		hr, img, link, pre, q, sdfield, strike, sub, sup, tt, u
+		)
+
+		## DONT PROTECT UNKOWN TAGS
+		## Setting this option will prevent unknown tags from becoming protected
+	dontProtectUnknownTags_rte = 1
+	
+
+		## CONTENT TO RTE
+	entryHTMLparser_rte = 0
+	entryHTMLparser_rte {
+	
+			## TAGS ALLOWED
+			## Always use the same list of allowed tags.
+		allowTags < proc.allowTags
+		
+			## TAGS DENIED
+			## Make sure we can set rules on any tag listed in allowTags.
+		denyTags >
+		denyTags < proc.denyTags
+		
+			## AVOID CONTENT BEING HSCed TWICE
+		htmlSpecialChars = 0
+		
+		tags {
+				## REMOVE IMG TAGS
+			img.allowedAttribs = 0
+			img.rmTagIfNoAttrib = 1
+			
+				## CLEAN ATTRIBUTES ON THE FOLLOWING TAGS
+			a.allowedAttribs = class,href,target
+			a.rmTagIfNoAttrib = 1
+			b.allowedAttribs = 0
+			blockquote.allowedAttribs = class
+#BUG: converts output from <br/> to <br>
+#br.allowedAttribs = 0
+			div.allowedAttribs = class
+			em.allowedAttribs = 0
+			h1.allowedAttribs = class
+			h2.allowedAttribs = class
+			h3.allowedAttribs = class
+			h4.allowedAttribs = class
+			h5.allowedAttribs = class
+			h6.allowedAttribs = class
+			i.allowedAttribs = 0
+			li.allowedAttribs = class
+			ol.allowedAttribs = class
+			p.allowedAttribs = class
+			span.allowedAttribs = class
+			span.rmTagIfNoAttrib = 1
+			strong.allowedAttribs = 0
+			table.allowedAttribs = class
+			thead.allowedAttribs = class
+			tbody.allowedAttribs = class
+			tfoot.allowedAttribs = class
+			td.allowedAttribs = class
+			th.allowedAttribs = class
+			tr.allowedAttribs = class
+			ul.allowedAttribs = class
+
+		code.remap = programlisting
+
+		}
+	}
+	
+	exitHTMLparser_rte = 0
+	exitHTMLparser_rte {
+			## REMAP B AND I TAGS
+			## b and i tags are used by Mozilla/Firefox in editing mode.
+			## This must be done on exit because the default HTMLparser_db parsing executes the reverse mapping.
+		tags.b.remap = strong
+		tags.i.remap = em
+		
+			## KEEP ALL TAGS
+			## Unwanted tags were removed on entry.
+			## Without this rule, the parser will remove all tags! Presumably, this rule will be more efficient than repeating the allowTags rule
+		keepNonMatchedTags = 1
+		
+			## AVOID CONTENT BEING HSCed TWICE
+		htmlSpecialChars = 0
+	}
+
+}
