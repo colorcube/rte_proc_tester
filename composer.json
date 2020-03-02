@@ -31,7 +31,6 @@
     }
   },
   "replace": {
-    "rte_proc_tester": "self.version",
     "typo3-ter/rte-proc-tester": "self.version"
   },
   "extra": {
