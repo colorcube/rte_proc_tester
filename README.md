@@ -19,7 +19,7 @@ Nowadays the CKEditor is used. The processing is still the same but the configur
     
 ## Usage
 
-Further information: https://docs.typo3.org/typo3cms/extensions/rte_proc_tester/
+Further information: https://docs.typo3.org/p/colorcube/rte-proc-tester/master/en-us/
 
 ### Dependencies
 
